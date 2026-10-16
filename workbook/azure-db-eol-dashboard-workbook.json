@@ -1,0 +1,1284 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Azure data services version & end-of-support dashboard\nLive view of the Azure data services in the selected subscriptions (relational databases, SQL Server on Azure VMs and enabled by Azure Arc, Azure Cosmos DB, Azure DocumentDB, Apache Cassandra and Redis), checked against Microsoft's published support and retirement dates, plus the retirement notices Microsoft has sent for these subscriptions.\n\nThe data refreshes every time the dashboard is opened, and viewers only see resources they have read access to."
+      },
+      "name": "header"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "456b9888-0b8b-4f23-bb63-62cac40619a7",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscriptions",
+            "label": "Subscriptions",
+            "type": 6,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| project value = id, label = name, selected = true",
+            "crossComponentResources": [
+              "value::all"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "defaultValue": "value::all",
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
+          {
+            "id": "e6caa6f6-ac57-43c0-85aa-54bbfdee8c37",
+            "version": "KqlParameterItem/1.0",
+            "name": "selectedTab",
+            "label": "Selected tab",
+            "type": 1,
+            "isRequired": true,
+            "value": "versions",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "a1d68f38-3d1e-4aff-be6c-a7a1c82bf2b3",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_StandardSupportEnds",
+            "label": "Lifecycle: support ends",
+            "type": 1,
+            "isRequired": true,
+            "value": "case(Engine == 'PostgreSQL' and MajorVersion in ('11', '12', '13'), datetime(2026-07-31), Engine == 'PostgreSQL' and MajorVersion == '14', datetime(2026-12-11), Engine == 'PostgreSQL' and MajorVersion == '15', datetime(2027-11-11), Engine == 'PostgreSQL' and MajorVersion == '16', datetime(2028-11-09), Engine == 'PostgreSQL' and MajorVersion == '17', datetime(2029-11-08), Engine == 'PostgreSQL' and MajorVersion == '18', datetime(2030-11-14), Engine == 'MySQL' and MajorVersion == '5.7', datetime(2026-09-30), Engine == 'MySQL' and MajorVersion == '8.0', datetime(2027-01-31), Engine == 'SQL Server' and MajorVersion == '2012', datetime(2022-07-13), Engine == 'SQL Server' and MajorVersion == '2014', datetime(2024-07-10), Engine == 'SQL Server' and MajorVersion == '2016', datetime(2026-07-15), Engine == 'SQL Server' and MajorVersion == '2017', datetime(2027-10-13), Engine == 'SQL Server' and MajorVersion == '2019', datetime(2030-01-09), Engine == 'SQL Server' and MajorVersion == '2022', datetime(2033-01-12), Engine == 'SQL Server' and MajorVersion == '2025', datetime(2036-01-07), Engine == 'Cosmos DB for PostgreSQL' and MajorVersion == '11', datetime(2023-11-09), Engine == 'Cosmos DB for PostgreSQL' and MajorVersion == '12', datetime(2024-11-21), Engine == 'Cosmos DB for PostgreSQL' and MajorVersion == '13', datetime(2025-11-13), Engine == 'Cosmos DB for PostgreSQL' and MajorVersion == '14', datetime(2026-11-12), Engine == 'Cosmos DB for PostgreSQL' and MajorVersion == '15', datetime(2027-11-11), Engine == 'Cosmos DB for PostgreSQL' and MajorVersion == '16', datetime(2028-11-09), Engine == 'PostgreSQL single server', datetime(2025-03-28), Engine == 'MySQL single server', datetime(2024-09-16), Engine == 'MariaDB', datetime(2025-09-19), Engine == 'Azure Cache for Redis', datetime(2028-09-30), Engine == 'Azure Cache for Redis Enterprise', datetime(2027-03-31), datetime(null))",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "f2032d12-68bb-4cda-854a-0fb47bac2461",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_MainstreamSupportEnds",
+            "label": "Lifecycle: mainstream support ends",
+            "type": 1,
+            "isRequired": true,
+            "value": "case(Engine == 'SQL Server' and MajorVersion == '2012', datetime(2017-07-12), Engine == 'SQL Server' and MajorVersion == '2014', datetime(2019-07-10), Engine == 'SQL Server' and MajorVersion == '2016', datetime(2021-07-14), Engine == 'SQL Server' and MajorVersion == '2017', datetime(2022-10-12), Engine == 'SQL Server' and MajorVersion == '2019', datetime(2025-03-01), Engine == 'SQL Server' and MajorVersion == '2022', datetime(2028-01-12), Engine == 'SQL Server' and MajorVersion == '2025', datetime(2031-01-07), datetime(null))",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "4aaeba8b-ff7f-422d-8246-a8ac7eb58ffc",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_ExtendedSupportStarts",
+            "label": "Lifecycle: paid support starts",
+            "type": 1,
+            "isRequired": true,
+            "value": "case(Engine == 'PostgreSQL' and MajorVersion in ('11', '12', '13'), datetime(2026-08-01), Engine == 'PostgreSQL' and MajorVersion == '14', datetime(2027-02-01), Engine == 'MySQL' and MajorVersion == '5.7', datetime(2026-10-01), Engine == 'MySQL' and MajorVersion == '8.0', datetime(2027-02-01), Engine == 'SQL Server' and MajorVersion == '2012', datetime(2022-07-13), Engine == 'SQL Server' and MajorVersion == '2014', datetime(2024-07-10), Engine == 'SQL Server' and MajorVersion == '2016', datetime(2026-07-15), datetime(null))",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "65f82648-9541-4271-a608-cec61d3d08f0",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_ExtendedSupportEnds",
+            "label": "Lifecycle: paid support ends",
+            "type": 1,
+            "isRequired": true,
+            "value": "case(Engine == 'PostgreSQL' and MajorVersion == '11', datetime(2027-03-31), Engine == 'PostgreSQL' and MajorVersion == '12', datetime(2027-11-13), Engine == 'PostgreSQL' and MajorVersion == '13', datetime(2028-11-12), Engine == 'PostgreSQL' and MajorVersion == '14', datetime(2029-11-11), Engine == 'MySQL' and MajorVersion == '5.7', datetime(2029-03-31), Engine == 'MySQL' and MajorVersion == '8.0', datetime(2029-05-31), Engine == 'SQL Server' and MajorVersion == '2012', datetime(2025-07-09), Engine == 'SQL Server' and MajorVersion == '2014', datetime(2027-07-13), Engine == 'SQL Server' and MajorVersion == '2016', datetime(2029-07-17), datetime(null))",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "b49aeec3-4973-402a-a03b-84b78c0151b4",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_Data",
+            "label": "Lifecycle: data",
+            "type": 1,
+            "isRequired": true,
+            "value": "{\"schema\":1,\"entries\":[{\"engine\":\"PostgreSQL\",\"version\":\"11\",\"standardSupportEnds\":\"2026-07-31\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":\"2026-08-01\",\"extendedSupportEnds\":\"2027-03-31\",\"note\":\"\"},{\"engine\":\"PostgreSQL\",\"version\":\"12\",\"standardSupportEnds\":\"2026-07-31\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":\"2026-08-01\",\"extendedSupportEnds\":\"2027-11-13\",\"note\":\"\"},{\"engine\":\"PostgreSQL\",\"version\":\"13\",\"standardSupportEnds\":\"2026-07-31\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":\"2026-08-01\",\"extendedSupportEnds\":\"2028-11-12\",\"note\":\"\"},{\"engine\":\"PostgreSQL\",\"version\":\"14\",\"standardSupportEnds\":\"2026-12-11\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":\"2027-02-01\",\"extendedSupportEnds\":\"2029-11-11\",\"note\":\"Microsoft's pages give different end dates (11 Dec 2026 and 31 Jan 2027); the earlier one is used.\"},{\"engine\":\"PostgreSQL\",\"version\":\"15\",\"standardSupportEnds\":\"2027-11-11\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"PostgreSQL\",\"version\":\"16\",\"standardSupportEnds\":\"2028-11-09\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"PostgreSQL\",\"version\":\"17\",\"standardSupportEnds\":\"2029-11-08\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"PostgreSQL\",\"version\":\"18\",\"standardSupportEnds\":\"2030-11-14\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"MySQL\",\"version\":\"5.7\",\"standardSupportEnds\":\"2026-09-30\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":\"2026-10-01\",\"extendedSupportEnds\":\"2029-03-31\",\"note\":\"\"},{\"engine\":\"MySQL\",\"version\":\"8.0\",\"standardSupportEnds\":\"2027-01-31\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":\"2027-02-01\",\"extendedSupportEnds\":\"2029-05-31\",\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2012\",\"standardSupportEnds\":\"2022-07-13\",\"mainstreamSupportEnds\":\"2017-07-12\",\"extendedSupportStarts\":\"2022-07-13\",\"extendedSupportEnds\":\"2025-07-09\",\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2014\",\"standardSupportEnds\":\"2024-07-10\",\"mainstreamSupportEnds\":\"2019-07-10\",\"extendedSupportStarts\":\"2024-07-10\",\"extendedSupportEnds\":\"2027-07-13\",\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2016\",\"standardSupportEnds\":\"2026-07-15\",\"mainstreamSupportEnds\":\"2021-07-14\",\"extendedSupportStarts\":\"2026-07-15\",\"extendedSupportEnds\":\"2029-07-17\",\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2017\",\"standardSupportEnds\":\"2027-10-13\",\"mainstreamSupportEnds\":\"2022-10-12\",\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2019\",\"standardSupportEnds\":\"2030-01-09\",\"mainstreamSupportEnds\":\"2025-03-01\",\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2022\",\"standardSupportEnds\":\"2033-01-12\",\"mainstreamSupportEnds\":\"2028-01-12\",\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"SQL Server\",\"version\":\"2025\",\"standardSupportEnds\":\"2036-01-07\",\"mainstreamSupportEnds\":\"2031-01-07\",\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Cosmos DB for PostgreSQL\",\"version\":\"11\",\"standardSupportEnds\":\"2023-11-09\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Cosmos DB for PostgreSQL\",\"version\":\"12\",\"standardSupportEnds\":\"2024-11-21\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Cosmos DB for PostgreSQL\",\"version\":\"13\",\"standardSupportEnds\":\"2025-11-13\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Cosmos DB for PostgreSQL\",\"version\":\"14\",\"standardSupportEnds\":\"2026-11-12\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Cosmos DB for PostgreSQL\",\"version\":\"15\",\"standardSupportEnds\":\"2027-11-11\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Cosmos DB for PostgreSQL\",\"version\":\"16\",\"standardSupportEnds\":\"2028-11-09\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"PostgreSQL single server\",\"version\":\"all\",\"standardSupportEnds\":\"2025-03-28\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"MySQL single server\",\"version\":\"all\",\"standardSupportEnds\":\"2024-09-16\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"MariaDB\",\"version\":\"all\",\"standardSupportEnds\":\"2025-09-19\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Azure Cache for Redis\",\"version\":\"all\",\"standardSupportEnds\":\"2028-09-30\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"},{\"engine\":\"Azure Cache for Redis Enterprise\",\"version\":\"all\",\"standardSupportEnds\":\"2027-03-31\",\"mainstreamSupportEnds\":null,\"extendedSupportStarts\":null,\"extendedSupportEnds\":null,\"note\":\"\"}]}",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "74df57c3-ad49-460e-a10a-d9d9bca63e58",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_LastChecked",
+            "label": "Lifecycle: last checked",
+            "type": 1,
+            "isRequired": true,
+            "value": "13 Oct 2026",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "c97f745e-d3d4-47f5-b65b-fb851ec1c6d4",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_LastCheckedIso",
+            "label": "Lifecycle: last checked (ISO)",
+            "type": 1,
+            "isRequired": true,
+            "value": "2026-10-13",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          },
+          {
+            "id": "37f52070-6eb7-4cf5-a03c-85e254a6b2ac",
+            "version": "KqlParameterItem/1.0",
+            "name": "Lifecycle_Source",
+            "label": "Lifecycle: source",
+            "type": 1,
+            "isRequired": true,
+            "value": "Microsoft Learn",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "isHiddenWhenLocked": true
+          }
+        ],
+        "style": "pills",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "name": "parameters - scope and support dates"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| take 1\n| extend DaysSinceCheck = toint((now() - datetime({Lifecycle_LastCheckedIso})) / 1d)\n| project Freshness = case(DaysSinceCheck > 45, 'Support dates may be out of date', 'Support dates up to date'), Detail = strcat('Support dates last checked {Lifecycle_LastChecked} from {Lifecycle_Source}', case(DaysSinceCheck <= 0, ' (today)', DaysSinceCheck == 1, ' (yesterday)', strcat(' (', DaysSinceCheck, ' days ago)')), case(DaysSinceCheck > 45, '. Check the update job.', '.'))",
+        "size": 4,
+        "title": "",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "tiles",
+        "noDataMessage": "Select at least one subscription.",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "Freshness",
+            "formatter": 18,
+            "formatOptions": {
+              "thresholdsOptions": "colors",
+              "thresholdsGrid": [
+                {
+                  "operator": "==",
+                  "thresholdValue": "Support dates up to date",
+                  "representation": "green",
+                  "text": "{0}{1}"
+                },
+                {
+                  "operator": "Default",
+                  "thresholdValue": null,
+                  "representation": "orange",
+                  "text": "{0}{1}"
+                }
+              ]
+            }
+          },
+          "subtitleContent": {
+            "columnMatch": "Detail",
+            "formatter": 1
+          },
+          "showBorder": false
+        }
+      },
+      "name": "support dates freshness"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "31a86585-6af7-48b6-9935-2a94b9ac28a2",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Database versions",
+            "subTarget": "versions",
+            "style": "link"
+          },
+          {
+            "id": "3a202bb0-8be1-4cf8-8e2c-d3bbcbcaa10c",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Microsoft retirement notices",
+            "subTarget": "notices",
+            "style": "link"
+          },
+          {
+            "id": "5efae3ac-64a8-4ad4-98d4-45c64848abea",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Lifecycle dates & how to use",
+            "subTarget": "reference",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "tabs"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "45fd07dd-4201-407a-a3c3-3387a1ad72f9",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "DatabaseTypes",
+                  "label": "Database types",
+                  "type": 2,
+                  "description": "Show only these data services",
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "selectAllValue": "*",
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "defaultValue": "value::all",
+                  "value": [
+                    "value::all"
+                  ],
+                  "jsonData": "[{\"value\": \"PostgreSQL\", \"label\": \"Azure Database for PostgreSQL flexible server\"}, {\"value\": \"MySQL\", \"label\": \"Azure Database for MySQL flexible server\"}, {\"value\": \"SQL Server (Azure Arc)\", \"label\": \"SQL Server enabled by Azure Arc\"}, {\"value\": \"SQL Server (Azure VM)\", \"label\": \"SQL Server on Azure VMs\"}, {\"value\": \"SQL Managed Instance\", \"label\": \"Azure SQL Managed Instance\"}, {\"value\": \"Azure SQL Database\", \"label\": \"Azure SQL Database (logical servers)\"}, {\"value\": \"Cosmos DB for PostgreSQL\", \"label\": \"Azure Cosmos DB for PostgreSQL\"}, {\"value\": \"PostgreSQL single server\", \"label\": \"Azure Database for PostgreSQL single server (retired)\"}, {\"value\": \"MySQL single server\", \"label\": \"Azure Database for MySQL single server (retired)\"}, {\"value\": \"MariaDB\", \"label\": \"Azure Database for MariaDB (retired)\"}, {\"value\": \"Cosmos DB for MongoDB (RU)\", \"label\": \"Azure Cosmos DB for MongoDB (RU)\"}, {\"value\": \"DocumentDB (MongoDB vCore)\", \"label\": \"Azure DocumentDB (MongoDB vCore)\"}, {\"value\": \"Cosmos DB for NoSQL\", \"label\": \"Azure Cosmos DB for NoSQL\"}, {\"value\": \"Cosmos DB for Apache Cassandra\", \"label\": \"Azure Cosmos DB for Apache Cassandra\"}, {\"value\": \"Cosmos DB for Table\", \"label\": \"Azure Cosmos DB for Table\"}, {\"value\": \"Cosmos DB for Apache Gremlin\", \"label\": \"Azure Cosmos DB for Apache Gremlin\"}, {\"value\": \"Managed Instance for Apache Cassandra\", \"label\": \"Azure Managed Instance for Apache Cassandra\"}, {\"value\": \"Azure Cache for Redis\", \"label\": \"Azure Cache for Redis (Basic, Standard, Premium)\"}, {\"value\": \"Azure Cache for Redis Enterprise\", \"label\": \"Azure Cache for Redis (Enterprise, Enterprise Flash)\"}, {\"value\": \"Azure Managed Redis\", \"label\": \"Azure Managed Redis\"}]"
+                },
+                {
+                  "id": "693b9a15-48be-4e0a-b2a3-24ca9b5e4da3",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "TagName",
+                  "label": "Tag name",
+                  "type": 2,
+                  "description": "Filter by a tag. Names and values are matched regardless of case. For SQL Server, the tag on its machine or VM counts when the SQL Server resource doesn't have it",
+                  "isRequired": false,
+                  "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagSets = parse_json(strcat('[{\"#none\":\"\"},', iff(isempty(tostring(tags)), '{}', tostring(tags)), ',', iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines') and isnotempty(tostring(HostTags)), tostring(HostTags), '{}'), ']'))\n| mv-expand TagSets\n| mv-expand bagexpansion=array TagSets\n| extend TagName = tolower(tostring(TagSets[0]))\n| where isnotempty(TagName) and TagName !startswith 'hidden-' and TagName !contains \"'\"\n| summarize by id, TagName\n| summarize Servers = count() by TagName\n| extend SortKey = iff(TagName == '#none', 0, 1)\n| order by SortKey asc, TagName asc\n| project value = TagName, label = iff(TagName == '#none', 'No tag filter', strcat(TagName, ' (', Servers, ')'))",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": "#none",
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources"
+                },
+                {
+                  "id": "9a1325c1-e128-4636-8309-3f15e16e3ccb",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "TagValues",
+                  "label": "Tag values",
+                  "type": 2,
+                  "description": "Values of the chosen tag (number of servers in brackets). Pick (not tagged) to find servers without the tag",
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "selectAllValue": "*",
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "defaultValue": "value::all",
+                  "value": [
+                    "value::all"
+                  ],
+                  "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagValue = iff('{TagName}' in ('', '#none'), '#none', coalesce(tostring(parse_json(tolower(tostring(tags)))[tolower('{TagName}')]), iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines'), tostring(parse_json(tolower(tostring(HostTags)))[tolower('{TagName}')]), '')))\n| where TagValue !contains \"'\" and TagValue !contains \"\\\\\"\n| summarize Servers = count() by TagValue\n| extend SortKey = case(TagValue == '#none', 0, isempty(TagValue), 2, 1)\n| order by SortKey asc, TagValue asc\n| project value = iff(isempty(TagValue), '#notset', TagValue), label = case(TagValue == '#none', 'Pick a tag name first', isempty(TagValue), strcat('(not tagged) (', Servers, ')'), strcat(TagValue, ' (', Servers, ')'))",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources"
+                },
+                {
+                  "id": "6783bd5e-5a36-4101-acdd-e4a1f7a85895",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "ResourceGroups",
+                  "label": "Resource groups",
+                  "type": 2,
+                  "description": "Resource groups that hold database servers matching the filters before this one (number of servers in brackets)",
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "selectAllValue": "*",
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "defaultValue": "value::all",
+                  "value": [
+                    "value::all"
+                  ],
+                  "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagValue = coalesce(tostring(parse_json(tolower(tostring(tags)))[tolower('{TagName}')]), iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines'), tostring(parse_json(tolower(tostring(HostTags)))[tolower('{TagName}')]), ''))\n| where '{TagName}' in ('', '#none') or '*' in ({TagValues}) or TagValue in ({TagValues}) or (isempty(TagValue) and '#notset' in ({TagValues}))\n| extend ResourceGroup = tolower(resourceGroup)\n| summarize Servers = count() by ResourceGroup\n| order by ResourceGroup asc\n| project value = ResourceGroup, label = strcat(ResourceGroup, ' (', Servers, ')')",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources"
+                },
+                {
+                  "id": "12df88ee-e2c3-4565-8ee7-dfc24f88215a",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Statuses",
+                  "label": "Status",
+                  "type": 2,
+                  "description": "Show only servers with these statuses",
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "selectAllValue": "*",
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "defaultValue": "value::all",
+                  "value": [
+                    "value::all"
+                  ],
+                  "jsonData": "[{\"value\": \"Past end of support\", \"label\": \"Past end of support\"}, {\"value\": \"Red\", \"label\": \"Red\"}, {\"value\": \"Amber\", \"label\": \"Amber\"}, {\"value\": \"Green\", \"label\": \"Green\"}, {\"value\": \"Review\", \"label\": \"Review\"}, {\"value\": \"No end date\", \"label\": \"No end date\"}, {\"value\": \"Not version-based\", \"label\": \"Not version-based\"}]"
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "name": "parameters - filters"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "91cdc3bd-076d-482f-859a-2a221b300aae",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "RedDays",
+                  "label": "Red within (days)",
+                  "type": 1,
+                  "isRequired": true,
+                  "value": "180",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "description": "Support ends within this many days"
+                },
+                {
+                  "id": "64014f3f-882e-430e-ba65-1f499bc06c52",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AmberDays",
+                  "label": "Amber within (days)",
+                  "type": 1,
+                  "isRequired": true,
+                  "value": "365",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "description": "Support ends within this many days"
+                },
+                {
+                  "id": "38c58e1c-998c-47ab-89d3-ba25aa5c1a19",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "OwnerTag",
+                  "label": "Owner tag name",
+                  "type": 1,
+                  "isRequired": true,
+                  "value": "Owner",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "description": "Name of the resource tag that holds the owner. An email address in it also gets the reminder emails"
+                },
+                {
+                  "id": "421f572d-fc3c-4f46-801a-18217830f251",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "MongoReviewBelow",
+                  "label": "MongoDB: review versions below",
+                  "type": 2,
+                  "description": "Cosmos DB for MongoDB (RU) accounts and Azure DocumentDB clusters on an older MongoDB version are marked Review",
+                  "isRequired": true,
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "jsonData": "[{\"value\": \"400\", \"label\": \"4.0\"}, {\"value\": \"402\", \"label\": \"4.2\"}, {\"value\": \"500\", \"label\": \"5.0\", \"selected\": true}, {\"value\": \"600\", \"label\": \"6.0\"}, {\"value\": \"700\", \"label\": \"7.0\"}, {\"value\": \"800\", \"label\": \"8.0\"}]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": "500"
+                },
+                {
+                  "id": "33ed861e-d23b-479a-9ce2-6de02a471634",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "CassandraReviewBelow",
+                  "label": "Cassandra: review versions below",
+                  "type": 2,
+                  "description": "Azure Managed Instance for Apache Cassandra clusters on an older Cassandra version are marked Review",
+                  "isRequired": true,
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "jsonData": "[{\"value\": \"400\", \"label\": \"4.0\", \"selected\": true}, {\"value\": \"401\", \"label\": \"4.1\"}, {\"value\": \"500\", \"label\": \"5.0\"}]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": "400"
+                },
+                {
+                  "id": "2bb53940-5144-4f3e-9f25-7a72b42583f8",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "TeamEmails",
+                  "label": "Reminder emails to",
+                  "type": 1,
+                  "isRequired": false,
+                  "value": "",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "description": "Database team address(es) for the weekly reminder email. Separate several with semicolons. Save the dashboard after changing it"
+                },
+                {
+                  "id": "d5478f6a-f939-4563-82f1-e759cd62a990",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "ReminderLogicApp",
+                  "label": "Reminder Logic App",
+                  "type": 1,
+                  "isRequired": true,
+                  "value": "la-db-eol-reminders",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "isHiddenWhenLocked": true
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "name": "parameters - versions"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "**Status key**\n\n| Status | Meaning |\n|---|---|\n| Past end of support | Support has ended, or the service has been retired. PostgreSQL and MySQL run in paid Extended Support. SQL Server only gets security updates through Extended Security Updates (ESU). |\n| Red | Support ends within {RedDays} days |\n| Amber | Support ends within {AmberDays} days |\n| Green | More than {AmberDays} days of support left |\n| Review | MongoDB version below {MongoReviewBelow:label} (Cosmos DB for MongoDB RU, Azure DocumentDB) or Cassandra version below {CassandraReviewBelow:label} (Managed Instance for Apache Cassandra), or the version isn't reported. These versions have no end-of-support date, so this is for upgrade planning. |\n| No end date | Microsoft hasn't published an end date for this version yet (see the Lifecycle dates tab) |\n| Not version-based | Nothing to upgrade: Azure SQL Database and Cosmos DB for NoSQL, Cassandra, Table and Gremlin. SQL Managed Instance follows an update policy instead. |\n\n**Support ends** is the end of Azure standard support for PostgreSQL and MySQL, the end of Microsoft extended support (when free security updates stop) for SQL Server, the version retirement date for Cosmos DB for PostgreSQL, and the service retirement date for Azure Cache for Redis, single servers and MariaDB. **Paid support ends** is when Azure Extended Support (PostgreSQL, MySQL) or Extended Security Updates (SQL Server) end. A blank means Microsoft hasn't published that date.\n"
+            },
+            "name": "legend"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagValue = coalesce(tostring(parse_json(tolower(tostring(tags)))[tolower('{TagName}')]), iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines'), tostring(parse_json(tolower(tostring(HostTags)))[tolower('{TagName}')]), ''))\n| where '{TagName}' in ('', '#none') or '*' in ({TagValues}) or TagValue in ({TagValues}) or (isempty(TagValue) and '#notset' in ({TagValues}))\n| where '*' in ({ResourceGroups}) or tolower(resourceGroup) in ({ResourceGroups})\n| extend Engine = iff(DatabaseType in ('SQL Server (Azure Arc)', 'SQL Server (Azure VM)'), 'SQL Server', DatabaseType)\n| extend RawVersion = case(Engine == 'SQL Managed Instance', tostring(properties.databaseFormat), Engine == 'Cosmos DB for MongoDB (RU)', tostring(properties.apiProperties.serverVersion), Engine == 'DocumentDB (MongoDB vCore)', tostring(properties.serverVersion), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.sqlImageOffer), Engine == 'Cosmos DB for PostgreSQL', tostring(properties.postgresqlVersion), Engine == 'Managed Instance for Apache Cassandra', tostring(properties.cassandraVersion), type in~ ('microsoft.cache/redis', 'microsoft.cache/redisenterprise'), tostring(properties.redisVersion), Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), '', tostring(properties.version))\n| extend MajorVersion = case(Engine in ('MySQL', 'Azure Cache for Redis', 'Azure Cache for Redis Enterprise', 'Azure Managed Redis') and RawVersion contains '.', strcat(tostring(split(RawVersion, '.')[0]), '.', tostring(split(RawVersion, '.')[1])), type =~ 'microsoft.azurearcdata/sqlserverinstances' and RawVersion startswith 'SQL Server ', substring(RawVersion, 11), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines' and RawVersion startswith 'SQL', strcat(substring(RawVersion, 3, 4), iff(substring(RawVersion, 7, 2) =~ 'R2', ' R2', '')), RawVersion)\n| extend StandardSupportEnds = {Lifecycle_StandardSupportEnds}\n| extend ExtendedSupportEnds = {Lifecycle_ExtendedSupportEnds}\n| extend DaysLeft = toint((StandardSupportEnds - now()) / 1d)\n| extend VersionNumber = toint(tostring(split(MajorVersion, '.')[0])) * 100 + toint(tostring(split(MajorVersion, '.')[1]))\n| extend Status = case(Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), 'Not version-based', Engine in ('Cosmos DB for MongoDB (RU)', 'DocumentDB (MongoDB vCore)') and (isempty(MajorVersion) or VersionNumber < {MongoReviewBelow}), 'Review', Engine == 'Managed Instance for Apache Cassandra' and (isempty(MajorVersion) or VersionNumber < {CassandraReviewBelow}), 'Review', isnull(StandardSupportEnds), 'No end date', DaysLeft < 0, 'Past end of support', DaysLeft <= {RedDays}, 'Red', DaysLeft <= {AmberDays}, 'Amber', 'Green')\n| extend VersionKey = case(Engine == 'SQL Managed Instance', case(RawVersion == 'SQLServer2022', 'SQL Server 2022 update policy', RawVersion == 'SQLServer2025', 'SQL Server 2025 update policy', RawVersion == 'AlwaysUpToDate', 'Always-up-to-date update policy', isempty(RawVersion), 'Update policy not reported', RawVersion), Status == 'Not version-based', 'n/a', isempty(MajorVersion) or MajorVersion =~ 'Unknown', 'Not reported', MajorVersion)\n| where '*' in ({Statuses}) or Status in ({Statuses})\n| summarize Servers = count() by Status\n| extend SortOrder = case(Status == 'Past end of support', 1, Status == 'Red', 2, Status == 'Amber', 3, Status == 'Review', 4, Status == 'Green', 5, Status == 'No end date', 6, 7)\n| order by SortOrder asc",
+              "size": 4,
+              "title": "Database servers by status",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "tiles",
+              "noDataMessage": "No database servers found in the selected subscriptions.",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "Status",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "colors",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Past end of support",
+                        "representation": "purple",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Red",
+                        "representation": "redBright",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Amber",
+                        "representation": "orange",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Review",
+                        "representation": "yellow",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Green",
+                        "representation": "green",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "blue",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "leftContent": {
+                  "columnMatch": "Servers",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "style": "decimal",
+                      "maximumFractionDigits": 0
+                    }
+                  }
+                },
+                "showBorder": true,
+                "sortCriteriaField": "SortOrder",
+                "sortOrderField": 1
+              }
+            },
+            "name": "summary - status tiles"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagValue = coalesce(tostring(parse_json(tolower(tostring(tags)))[tolower('{TagName}')]), iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines'), tostring(parse_json(tolower(tostring(HostTags)))[tolower('{TagName}')]), ''))\n| where '{TagName}' in ('', '#none') or '*' in ({TagValues}) or TagValue in ({TagValues}) or (isempty(TagValue) and '#notset' in ({TagValues}))\n| where '*' in ({ResourceGroups}) or tolower(resourceGroup) in ({ResourceGroups})\n| extend Engine = iff(DatabaseType in ('SQL Server (Azure Arc)', 'SQL Server (Azure VM)'), 'SQL Server', DatabaseType)\n| extend RawVersion = case(Engine == 'SQL Managed Instance', tostring(properties.databaseFormat), Engine == 'Cosmos DB for MongoDB (RU)', tostring(properties.apiProperties.serverVersion), Engine == 'DocumentDB (MongoDB vCore)', tostring(properties.serverVersion), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.sqlImageOffer), Engine == 'Cosmos DB for PostgreSQL', tostring(properties.postgresqlVersion), Engine == 'Managed Instance for Apache Cassandra', tostring(properties.cassandraVersion), type in~ ('microsoft.cache/redis', 'microsoft.cache/redisenterprise'), tostring(properties.redisVersion), Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), '', tostring(properties.version))\n| extend MajorVersion = case(Engine in ('MySQL', 'Azure Cache for Redis', 'Azure Cache for Redis Enterprise', 'Azure Managed Redis') and RawVersion contains '.', strcat(tostring(split(RawVersion, '.')[0]), '.', tostring(split(RawVersion, '.')[1])), type =~ 'microsoft.azurearcdata/sqlserverinstances' and RawVersion startswith 'SQL Server ', substring(RawVersion, 11), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines' and RawVersion startswith 'SQL', strcat(substring(RawVersion, 3, 4), iff(substring(RawVersion, 7, 2) =~ 'R2', ' R2', '')), RawVersion)\n| extend StandardSupportEnds = {Lifecycle_StandardSupportEnds}\n| extend ExtendedSupportEnds = {Lifecycle_ExtendedSupportEnds}\n| extend DaysLeft = toint((StandardSupportEnds - now()) / 1d)\n| extend VersionNumber = toint(tostring(split(MajorVersion, '.')[0])) * 100 + toint(tostring(split(MajorVersion, '.')[1]))\n| extend Status = case(Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), 'Not version-based', Engine in ('Cosmos DB for MongoDB (RU)', 'DocumentDB (MongoDB vCore)') and (isempty(MajorVersion) or VersionNumber < {MongoReviewBelow}), 'Review', Engine == 'Managed Instance for Apache Cassandra' and (isempty(MajorVersion) or VersionNumber < {CassandraReviewBelow}), 'Review', isnull(StandardSupportEnds), 'No end date', DaysLeft < 0, 'Past end of support', DaysLeft <= {RedDays}, 'Red', DaysLeft <= {AmberDays}, 'Amber', 'Green')\n| extend VersionKey = case(Engine == 'SQL Managed Instance', case(RawVersion == 'SQLServer2022', 'SQL Server 2022 update policy', RawVersion == 'SQLServer2025', 'SQL Server 2025 update policy', RawVersion == 'AlwaysUpToDate', 'Always-up-to-date update policy', isempty(RawVersion), 'Update policy not reported', RawVersion), Status == 'Not version-based', 'n/a', isempty(MajorVersion) or MajorVersion =~ 'Unknown', 'Not reported', MajorVersion)\n| where '*' in ({Statuses}) or Status in ({Statuses})\n| extend Subscription = strcat('/subscriptions/', subscriptionId), ResourceGroup = tolower(resourceGroup)\n| summarize Servers = count(), PastSupport = sum(iff(Status == 'Past end of support', 1, 0)), Red = sum(iff(Status == 'Red', 1, 0)), Amber = sum(iff(Status == 'Amber', 1, 0)), Green = sum(iff(Status == 'Green', 1, 0)), Other = sum(iff(Status in ('Review', 'No end date', 'Not version-based'), 1, 0)) by Subscription, ResourceGroup\n| order by PastSupport desc, Red desc, Amber desc, ResourceGroup asc\n| project ResourceGroup, Subscription, Servers, PastSupport, Red, Amber, Green, Other",
+              "size": 0,
+              "title": "Servers by resource group (most at risk first)",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table",
+              "showExportToExcel": true,
+              "noDataMessage": "No database servers match the filters.",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "PastSupport",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "purple"
+                    }
+                  },
+                  {
+                    "columnMatch": "Red",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "red"
+                    }
+                  },
+                  {
+                    "columnMatch": "Amber",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "orange"
+                    }
+                  }
+                ],
+                "rowLimit": 1000,
+                "filter": true,
+                "labelSettings": [
+                  {
+                    "columnId": "ResourceGroup",
+                    "label": "Resource group"
+                  },
+                  {
+                    "columnId": "Subscription",
+                    "label": "Subscription"
+                  },
+                  {
+                    "columnId": "Servers",
+                    "label": "Servers"
+                  },
+                  {
+                    "columnId": "PastSupport",
+                    "label": "Past end of support"
+                  },
+                  {
+                    "columnId": "Red",
+                    "label": "Red"
+                  },
+                  {
+                    "columnId": "Amber",
+                    "label": "Amber"
+                  },
+                  {
+                    "columnId": "Green",
+                    "label": "Green"
+                  },
+                  {
+                    "columnId": "Other",
+                    "label": "Other"
+                  }
+                ]
+              }
+            },
+            "name": "summary - servers by resource group"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagValue = coalesce(tostring(parse_json(tolower(tostring(tags)))[tolower('{TagName}')]), iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines'), tostring(parse_json(tolower(tostring(HostTags)))[tolower('{TagName}')]), ''))\n| where '{TagName}' in ('', '#none') or '*' in ({TagValues}) or TagValue in ({TagValues}) or (isempty(TagValue) and '#notset' in ({TagValues}))\n| where '*' in ({ResourceGroups}) or tolower(resourceGroup) in ({ResourceGroups})\n| extend Engine = iff(DatabaseType in ('SQL Server (Azure Arc)', 'SQL Server (Azure VM)'), 'SQL Server', DatabaseType)\n| extend RawVersion = case(Engine == 'SQL Managed Instance', tostring(properties.databaseFormat), Engine == 'Cosmos DB for MongoDB (RU)', tostring(properties.apiProperties.serverVersion), Engine == 'DocumentDB (MongoDB vCore)', tostring(properties.serverVersion), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.sqlImageOffer), Engine == 'Cosmos DB for PostgreSQL', tostring(properties.postgresqlVersion), Engine == 'Managed Instance for Apache Cassandra', tostring(properties.cassandraVersion), type in~ ('microsoft.cache/redis', 'microsoft.cache/redisenterprise'), tostring(properties.redisVersion), Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), '', tostring(properties.version))\n| extend MajorVersion = case(Engine in ('MySQL', 'Azure Cache for Redis', 'Azure Cache for Redis Enterprise', 'Azure Managed Redis') and RawVersion contains '.', strcat(tostring(split(RawVersion, '.')[0]), '.', tostring(split(RawVersion, '.')[1])), type =~ 'microsoft.azurearcdata/sqlserverinstances' and RawVersion startswith 'SQL Server ', substring(RawVersion, 11), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines' and RawVersion startswith 'SQL', strcat(substring(RawVersion, 3, 4), iff(substring(RawVersion, 7, 2) =~ 'R2', ' R2', '')), RawVersion)\n| extend StandardSupportEnds = {Lifecycle_StandardSupportEnds}\n| extend ExtendedSupportEnds = {Lifecycle_ExtendedSupportEnds}\n| extend DaysLeft = toint((StandardSupportEnds - now()) / 1d)\n| extend VersionNumber = toint(tostring(split(MajorVersion, '.')[0])) * 100 + toint(tostring(split(MajorVersion, '.')[1]))\n| extend Status = case(Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), 'Not version-based', Engine in ('Cosmos DB for MongoDB (RU)', 'DocumentDB (MongoDB vCore)') and (isempty(MajorVersion) or VersionNumber < {MongoReviewBelow}), 'Review', Engine == 'Managed Instance for Apache Cassandra' and (isempty(MajorVersion) or VersionNumber < {CassandraReviewBelow}), 'Review', isnull(StandardSupportEnds), 'No end date', DaysLeft < 0, 'Past end of support', DaysLeft <= {RedDays}, 'Red', DaysLeft <= {AmberDays}, 'Amber', 'Green')\n| extend VersionKey = case(Engine == 'SQL Managed Instance', case(RawVersion == 'SQLServer2022', 'SQL Server 2022 update policy', RawVersion == 'SQLServer2025', 'SQL Server 2025 update policy', RawVersion == 'AlwaysUpToDate', 'Always-up-to-date update policy', isempty(RawVersion), 'Update policy not reported', RawVersion), Status == 'Not version-based', 'n/a', isempty(MajorVersion) or MajorVersion =~ 'Unknown', 'Not reported', MajorVersion)\n| where '*' in ({Statuses}) or Status in ({Statuses})\n| extend Selection = strcat(Engine, ' ', VersionKey)\n| summarize Servers = count() by Engine, VersionKey, Status, StandardSupportEnds, ExtendedSupportEnds, Selection\n| extend DaysLeft = toint((StandardSupportEnds - now()) / 1d)\n| extend SortOrder = case(Status == 'Past end of support', 1, Status == 'Red', 2, Status == 'Amber', 3, Status == 'Review', 4, Status == 'Green', 5, Status == 'No end date', 6, 7)\n| order by SortOrder asc, DaysLeft asc, Engine asc, VersionKey asc\n| project Engine, Version = VersionKey, Servers, Status, DaysLeft, StandardSupportEnds, ExtendedSupportEnds, Selection",
+              "size": 0,
+              "title": "Versions in use (select a row to list its servers below)",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table",
+              "showExportToExcel": true,
+              "noDataMessage": "No database servers match the filters.",
+              "exportFieldName": "Selection",
+              "exportParameterName": "SelectedVersion",
+              "exportDefaultValue": "*",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Status",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Past end of support",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Red",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Amber",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Review",
+                          "representation": "yellow",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Green",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "columnMatch": "StandardSupportEnds",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": true,
+                      "formatName": "shortDatePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "ExtendedSupportEnds",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": true,
+                      "formatName": "shortDatePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "Selection",
+                    "formatter": 5
+                  }
+                ],
+                "rowLimit": 1000,
+                "filter": true,
+                "labelSettings": [
+                  {
+                    "columnId": "Engine",
+                    "label": "Engine"
+                  },
+                  {
+                    "columnId": "Version",
+                    "label": "Version"
+                  },
+                  {
+                    "columnId": "Servers",
+                    "label": "Servers"
+                  },
+                  {
+                    "columnId": "Status",
+                    "label": "Status"
+                  },
+                  {
+                    "columnId": "DaysLeft",
+                    "label": "Days left"
+                  },
+                  {
+                    "columnId": "StandardSupportEnds",
+                    "label": "Support ends"
+                  },
+                  {
+                    "columnId": "ExtendedSupportEnds",
+                    "label": "Paid support ends"
+                  }
+                ]
+              }
+            },
+            "name": "versions in use"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "Showing only the servers on **{SelectedVersion}**."
+            },
+            "conditionalVisibility": {
+              "parameterName": "SelectedVersion",
+              "comparison": "isNotEqualTo",
+              "value": "*"
+            },
+            "name": "picked version"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "paragraph",
+              "links": [
+                {
+                  "id": "da804bfe-ec20-41ea-83f5-aadfb0e73d29",
+                  "cellValue": "SelectedVersion",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Show all versions",
+                  "subTarget": "*",
+                  "style": "link"
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "SelectedVersion",
+              "comparison": "isNotEqualTo",
+              "value": "*"
+            },
+            "name": "show all versions"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources\n| where type in~ ('microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbformysql/flexibleservers', 'microsoft.sql/managedinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'microsoft.documentdb/mongoclusters', 'microsoft.sql/servers', 'microsoft.dbforpostgresql/servergroupsv2', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.documentdb/cassandraclusters', 'microsoft.cache/redis', 'microsoft.cache/redisenterprise')\n    or (type =~ 'microsoft.azurearcdata/sqlserverinstances' and (isempty(tostring(properties.serviceType)) or tostring(properties.serviceType) =~ 'Engine'))\n| where type !~ 'microsoft.sql/servers' or (kind !contains 'analytics' and resourceGroup !startswith 'synapseworkspace-managedrg-')\n| extend DatabaseType = case(type =~ 'microsoft.dbforpostgresql/flexibleservers', 'PostgreSQL', type =~ 'microsoft.dbformysql/flexibleservers', 'MySQL', type =~ 'microsoft.sql/managedinstances', 'SQL Managed Instance', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'SQL Server (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'SQL Server (Azure VM)', type =~ 'microsoft.documentdb/mongoclusters', 'DocumentDB (MongoDB vCore)', type =~ 'microsoft.sql/servers', 'Azure SQL Database', type =~ 'microsoft.dbforpostgresql/servergroupsv2', 'Cosmos DB for PostgreSQL', type =~ 'microsoft.dbforpostgresql/servers', 'PostgreSQL single server', type =~ 'microsoft.dbformysql/servers', 'MySQL single server', type =~ 'microsoft.dbformariadb/servers', 'MariaDB', type =~ 'microsoft.documentdb/cassandraclusters', 'Managed Instance for Apache Cassandra', type =~ 'microsoft.cache/redis', 'Azure Cache for Redis', type =~ 'microsoft.cache/redisenterprise' and tostring(sku.name) startswith 'Enterprise', 'Azure Cache for Redis Enterprise', type =~ 'microsoft.cache/redisenterprise', 'Azure Managed Redis', kind =~ 'MongoDB', 'Cosmos DB for MongoDB (RU)', tostring(properties.capabilities) contains 'EnableCassandra', 'Cosmos DB for Apache Cassandra', tostring(properties.capabilities) contains 'EnableTable', 'Cosmos DB for Table', tostring(properties.capabilities) contains 'EnableGremlin', 'Cosmos DB for Apache Gremlin', 'Cosmos DB for NoSQL')\n| where '*' in ({DatabaseTypes}) or DatabaseType in ({DatabaseTypes})\n| extend HostId = tolower(case(type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.containerResourceId), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.virtualMachineResourceId), ''))\n| join kind=leftouter (\n    resources\n    | where type in~ ('microsoft.hybridcompute/machines', 'microsoft.compute/virtualmachines')\n    | project HostId = tolower(id), HostTags = tags\n    ) on HostId\n| extend TagValue = coalesce(tostring(parse_json(tolower(tostring(tags)))[tolower('{TagName}')]), iff(type in~ ('microsoft.azurearcdata/sqlserverinstances', 'microsoft.sqlvirtualmachine/sqlvirtualmachines'), tostring(parse_json(tolower(tostring(HostTags)))[tolower('{TagName}')]), ''))\n| where '{TagName}' in ('', '#none') or '*' in ({TagValues}) or TagValue in ({TagValues}) or (isempty(TagValue) and '#notset' in ({TagValues}))\n| where '*' in ({ResourceGroups}) or tolower(resourceGroup) in ({ResourceGroups})\n| extend Engine = iff(DatabaseType in ('SQL Server (Azure Arc)', 'SQL Server (Azure VM)'), 'SQL Server', DatabaseType)\n| extend RawVersion = case(Engine == 'SQL Managed Instance', tostring(properties.databaseFormat), Engine == 'Cosmos DB for MongoDB (RU)', tostring(properties.apiProperties.serverVersion), Engine == 'DocumentDB (MongoDB vCore)', tostring(properties.serverVersion), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.sqlImageOffer), Engine == 'Cosmos DB for PostgreSQL', tostring(properties.postgresqlVersion), Engine == 'Managed Instance for Apache Cassandra', tostring(properties.cassandraVersion), type in~ ('microsoft.cache/redis', 'microsoft.cache/redisenterprise'), tostring(properties.redisVersion), Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), '', tostring(properties.version))\n| extend MajorVersion = case(Engine in ('MySQL', 'Azure Cache for Redis', 'Azure Cache for Redis Enterprise', 'Azure Managed Redis') and RawVersion contains '.', strcat(tostring(split(RawVersion, '.')[0]), '.', tostring(split(RawVersion, '.')[1])), type =~ 'microsoft.azurearcdata/sqlserverinstances' and RawVersion startswith 'SQL Server ', substring(RawVersion, 11), type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines' and RawVersion startswith 'SQL', strcat(substring(RawVersion, 3, 4), iff(substring(RawVersion, 7, 2) =~ 'R2', ' R2', '')), RawVersion)\n| extend StandardSupportEnds = {Lifecycle_StandardSupportEnds}\n| extend ExtendedSupportEnds = {Lifecycle_ExtendedSupportEnds}\n| extend DaysLeft = toint((StandardSupportEnds - now()) / 1d)\n| extend VersionNumber = toint(tostring(split(MajorVersion, '.')[0])) * 100 + toint(tostring(split(MajorVersion, '.')[1]))\n| extend Status = case(Engine in ('SQL Managed Instance', 'Azure SQL Database', 'Cosmos DB for NoSQL', 'Cosmos DB for Apache Cassandra', 'Cosmos DB for Table', 'Cosmos DB for Apache Gremlin'), 'Not version-based', Engine in ('Cosmos DB for MongoDB (RU)', 'DocumentDB (MongoDB vCore)') and (isempty(MajorVersion) or VersionNumber < {MongoReviewBelow}), 'Review', Engine == 'Managed Instance for Apache Cassandra' and (isempty(MajorVersion) or VersionNumber < {CassandraReviewBelow}), 'Review', isnull(StandardSupportEnds), 'No end date', DaysLeft < 0, 'Past end of support', DaysLeft <= {RedDays}, 'Red', DaysLeft <= {AmberDays}, 'Amber', 'Green')\n| extend VersionKey = case(Engine == 'SQL Managed Instance', case(RawVersion == 'SQLServer2022', 'SQL Server 2022 update policy', RawVersion == 'SQLServer2025', 'SQL Server 2025 update policy', RawVersion == 'AlwaysUpToDate', 'Always-up-to-date update policy', isempty(RawVersion), 'Update policy not reported', RawVersion), Status == 'Not version-based', 'n/a', isempty(MajorVersion) or MajorVersion =~ 'Unknown', 'Not reported', MajorVersion)\n| where '*' in ({Statuses}) or Status in ({Statuses})\n| where '{SelectedVersion}' == '*' or strcat(Engine, ' ', VersionKey) == '{SelectedVersion}'\n| join kind=leftouter (\n    resources\n    | where type =~ 'microsoft.hybridcompute/machines/extensions'\n    | where tostring(properties.type) in~ ('WindowsAgent.SqlServer', 'LinuxAgent.SqlServer')\n    | project HostId = tolower(substring(id, 0, indexof(id, '/extensions/'))), EsuSetting = tolower(coalesce(tostring(properties.settings.enableExtendedSecurityUpdates), tostring(properties.settings.EnableExtendedSecurityUpdates)))\n    ) on HostId\n| extend Hosting = case(type =~ 'microsoft.azurearcdata/sqlserverinstances' and tostring(properties.status) =~ 'Disconnected', 'Azure Arc (disconnected)', type =~ 'microsoft.azurearcdata/sqlserverinstances', 'Azure Arc', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', 'Azure VM', 'Azure managed service')\n| extend Edition = case(type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines', tostring(properties.sqlImageSku), type =~ 'microsoft.azurearcdata/sqlserverinstances', tostring(properties.edition), '')\n| extend Version = case(Engine == 'SQL Managed Instance', case(RawVersion == 'SQLServer2022', 'SQL Server 2022 update policy', RawVersion == 'SQLServer2025', 'SQL Server 2025 update policy', RawVersion == 'AlwaysUpToDate', 'Always-up-to-date update policy', isempty(RawVersion), 'Update policy not reported', RawVersion), Status == 'Not version-based', 'n/a', isempty(MajorVersion), 'Not reported', Engine == 'SQL Server' and isnotempty(Edition), strcat(MajorVersion, ' ', Edition), MajorVersion)\n| extend Owner = coalesce(tostring(tags['{OwnerTag}']), iff(Engine == 'SQL Server', tostring(HostTags['{OwnerTag}']), ''))\n| extend EsuCoverage = case(Engine != 'SQL Server' or isnull(ExtendedSupportEnds), '', ExtendedSupportEnds < now(), 'ESU period ended', type =~ 'microsoft.azurearcdata/sqlserverinstances' and EsuSetting == 'true', 'Subscribed (Azure Arc)', type =~ 'microsoft.azurearcdata/sqlserverinstances' and isnotempty(EsuSetting), 'Not subscribed (Azure Arc)', type =~ 'microsoft.sqlvirtualmachine/sqlvirtualmachines' and MajorVersion in ('2014'), 'Free on Azure VMs', 'Not reported')\n| extend Notes = case(Engine == 'PostgreSQL single server', 'This service has been retired. Migrate to Azure Database for PostgreSQL flexible server.', Engine == 'MySQL single server', 'This service has been retired. Migrate to Azure Database for MySQL flexible server.', Engine == 'MariaDB', 'This service has been retired. Migrate to Azure Database for MySQL flexible server.', Engine == 'Azure Cache for Redis', 'This service is being retired. Plan the move to Azure Managed Redis before the date shown.', Engine == 'Azure Cache for Redis Enterprise', 'The Enterprise tiers are being retired. Plan the move to Azure Managed Redis before the date shown, after which remaining caches are moved automatically.', Engine == 'Cosmos DB for PostgreSQL' and Status == 'Past end of support', 'This PostgreSQL version is retired, so the engine gets no more fixes. Upgrade it, and plan a move to Azure Database for PostgreSQL elastic clusters, as this service is on a retirement path.', Engine == 'Cosmos DB for PostgreSQL' and Status == 'Red', 'This PostgreSQL version retires soon. Upgrade it, and plan a move to Azure Database for PostgreSQL elastic clusters, as this service is on a retirement path.', Engine == 'Cosmos DB for PostgreSQL', 'This service is on a retirement path. Plan a move to Azure Database for PostgreSQL elastic clusters.', Engine == 'Azure SQL Database', 'Always runs the latest database engine, so there is no version to upgrade.', Engine == 'Cosmos DB for NoSQL', 'Fully managed service without versions to upgrade.', Engine == 'Cosmos DB for Apache Cassandra', 'Fully managed Cassandra-compatible API without versions to upgrade.', Engine == 'Cosmos DB for Table', 'Fully managed service without versions to upgrade.', Engine == 'Cosmos DB for Apache Gremlin', 'Fully managed service without versions to upgrade.', Engine == 'Managed Instance for Apache Cassandra' and Status == 'Review' and isnotempty(MajorVersion), 'Older Cassandra version that is past community end of life. Plan an in-place upgrade to a newer version.', Engine == 'Managed Instance for Apache Cassandra' and Status == 'No end date', 'No end-of-support date published for this version. Nothing to do now.', Engine == 'Azure Managed Redis', 'No end-of-support date published for this service. Nothing to do now.', Engine == 'SQL Server' and Status == 'Past end of support' and (isempty(EsuCoverage) or EsuCoverage == 'ESU period ended'), 'No more security updates, even with Extended Security Updates. Upgrade or migrate now.', Engine == 'SQL Server' and Status == 'Past end of support' and EsuCoverage == 'Subscribed (Azure Arc)', 'Covered by Extended Security Updates until the paid support end date. Plan the upgrade before then.', Engine == 'SQL Server' and Status == 'Past end of support' and EsuCoverage == 'Free on Azure VMs', 'Free Extended Security Updates on Azure VMs until the paid support end date. Keep Windows Update on and plan the upgrade.', Engine == 'SQL Server' and Status == 'Past end of support', 'No security updates unless Extended Security Updates are bought (through Azure Arc, the SQL IaaS Agent extension or volume licensing). Upgrade, or subscribe to ESU.', Engine == 'SQL Server' and Status == 'Red', 'Free security updates end soon. Schedule the upgrade, or plan for Extended Security Updates.', Status == 'Past end of support', 'In Extended Support, which is charged after any grace period. Upgrade to a supported version to stop the charges.', Status == 'Red', 'Standard support ends soon. Schedule the major version upgrade now.', Status == 'Amber', 'Plan the major version upgrade in the next planning cycle.', Status == 'Review' and isempty(MajorVersion), 'The server version is not reported. Check it on the Overview page of the resource.', Status == 'Review' and Engine == 'Cosmos DB for MongoDB (RU)', 'No end-of-support date: Azure gives at least three years notice before ending a version. For newer features, check that your drivers support a newer version, then upgrade from Features > Upgrade MongoDB server version.', Status == 'Review', 'No end-of-support date published. For newer features, check that your drivers support a newer version, then use Upgrade on the cluster Overview page.', Status == 'Not version-based' and RawVersion == 'SQLServer2022', 'The SQL Server 2022 update policy runs until SQL Server 2022 mainstream support ends (January 2028), then moves to the latest policy automatically.', Status == 'Not version-based', 'Tracked by update policy, so there is no version end date.', Status == 'No end date' and (isempty(MajorVersion) or MajorVersion =~ 'Unknown'), 'The version is not reported for this resource, so its support dates cannot be checked.', Status == 'No end date' and Engine == 'Cosmos DB for MongoDB (RU)', 'No end-of-support date: Azure gives at least three years notice before ending a version. Nothing to do now.', Status == 'No end date' and Engine == 'DocumentDB (MongoDB vCore)', 'No end-of-support date published for this version. Nothing to do now.', Status == 'No end date', 'Microsoft has not published an end date for this version yet.', '')\n| extend Subscription = strcat('/subscriptions/', subscriptionId)\n| project id, Engine, Version, Hosting, Status, DaysLeft, StandardSupportEnds, ExtendedSupportEnds, EsuCoverage, Owner, Notes, Subscription, resourceGroup, location\n| order by DaysLeft asc",
+              "size": 0,
+              "title": "Database servers and their end-of-support status",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table",
+              "showExportToExcel": true,
+              "noDataMessage": "No database servers match the filters.",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "id",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource",
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "Status",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Past end of support",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Red",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Amber",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Review",
+                          "representation": "yellow",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Green",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "columnMatch": "StandardSupportEnds",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": true,
+                      "formatName": "shortDatePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "ExtendedSupportEnds",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": true,
+                      "formatName": "shortDatePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  }
+                ],
+                "rowLimit": 5000,
+                "filter": true,
+                "sortBy": [
+                  {
+                    "itemKey": "DaysLeft",
+                    "sortOrder": 1
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "id",
+                    "label": "Server"
+                  },
+                  {
+                    "columnId": "Engine",
+                    "label": "Engine"
+                  },
+                  {
+                    "columnId": "Version",
+                    "label": "Version"
+                  },
+                  {
+                    "columnId": "Hosting",
+                    "label": "Hosting"
+                  },
+                  {
+                    "columnId": "Status",
+                    "label": "Status"
+                  },
+                  {
+                    "columnId": "DaysLeft",
+                    "label": "Days left"
+                  },
+                  {
+                    "columnId": "StandardSupportEnds",
+                    "label": "Support ends"
+                  },
+                  {
+                    "columnId": "ExtendedSupportEnds",
+                    "label": "Paid support ends"
+                  },
+                  {
+                    "columnId": "EsuCoverage",
+                    "label": "ESU (SQL Server)"
+                  },
+                  {
+                    "columnId": "Owner",
+                    "label": "Owner"
+                  },
+                  {
+                    "columnId": "Notes",
+                    "label": "What to do"
+                  },
+                  {
+                    "columnId": "Subscription",
+                    "label": "Subscription"
+                  },
+                  {
+                    "columnId": "resourceGroup",
+                    "label": "Resource group"
+                  },
+                  {
+                    "columnId": "location",
+                    "label": "Region"
+                  }
+                ]
+              }
+            },
+            "name": "inventory - versions and support dates"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "versions"
+      },
+      "name": "tab - database versions"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "0184259e-9133-4f15-a71c-1f928a7f50be",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "NoticeScope",
+                  "label": "Show notices for",
+                  "type": 2,
+                  "isRequired": true,
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "jsonData": "[{\"value\": \"db\", \"label\": \"Database services\", \"selected\": true}, {\"value\": \"all\", \"label\": \"All Azure services\"}]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": "db"
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "name": "parameters - notices"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "### Retirements announced by Microsoft\nThese come straight from Azure Advisor and Azure Service Health for the selected subscriptions, filtered to **{NoticeScope:label}**.\n- **Azure Advisor**: one row per affected resource, with the retiring feature and date where Advisor provides them.\n- **Azure Service Health**: one row per announced retirement, with the number of subscriptions it affects and a link to the full notice.\n\nNot every retirement comes with resource-level detail, so check both tables."
+            },
+            "name": "notices intro"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "advisorresources\n| where type =~ 'microsoft.advisor/recommendations'\n| where tostring(properties.extendedProperties.recommendationSubCategory) == 'ServiceUpgradeAndRetirement'\n| where tostring(properties.recommendationStatus) !in ('Completed', 'Dismissed')\n| extend recommendationTypeId = tostring(properties.recommendationTypeId)\n| extend ResourceId = tostring(properties.resourceMetadata.resourceId)\n| extend ResourceType = tostring(properties.impactedField)\n| extend Recommendation = coalesce(tostring(properties.shortDescription.problem), tostring(properties.label))\n| extend AdvisorStatus = tostring(properties.recommendationStatus)\n| where '{NoticeScope}' == 'all' or ResourceType contains 'DBfor' or ResourceType contains 'Microsoft.Sql' or ResourceType contains 'DocumentDB' or ResourceType contains 'Microsoft.Cache' or ResourceType contains 'AzureArcData' or ResourceType contains 'SqlVirtualMachine'\n| join kind=leftouter (\n    advisorresources\n    | where type =~ 'microsoft.advisor/metadata'\n    | where tostring(properties.language) == 'en'\n    | where tostring(properties.recommendationSubCategory) == 'ServiceUpgradeAndRetirement'\n    | project recommendationTypeId = tostring(properties.recommendationTypeId), RetiringFeature = tostring(properties.sourceProperties.serviceRetirement.retirementFeatureName), RetirementDate = todatetime(properties.sourceProperties.serviceRetirement.retirementDate), LearnMore = tostring(properties.learnMoreLink)\n    ) on recommendationTypeId\n| extend DaysLeft = toint((RetirementDate - now()) / 1d)\n| project ResourceId, ResourceType, Recommendation, RetiringFeature, RetirementDate, DaysLeft, AdvisorStatus, LearnMore, Subscription = strcat('/subscriptions/', subscriptionId)\n| order by RetirementDate asc",
+              "size": 0,
+              "title": "Retirement recommendations for your resources (Azure Advisor)",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table",
+              "showExportToExcel": true,
+              "noDataMessage": "Advisor has no open retirement recommendations for these resources.",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "ResourceId",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": "Resource",
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "RetirementDate",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": true,
+                      "formatName": "shortDatePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "LearnMore",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "Url",
+                      "linkLabel": "Learn more"
+                    }
+                  },
+                  {
+                    "columnMatch": "Subscription",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  }
+                ],
+                "rowLimit": 5000,
+                "filter": true,
+                "labelSettings": [
+                  {
+                    "columnId": "ResourceId",
+                    "label": "Resource"
+                  },
+                  {
+                    "columnId": "ResourceType",
+                    "label": "Resource type"
+                  },
+                  {
+                    "columnId": "Recommendation",
+                    "label": "Recommendation"
+                  },
+                  {
+                    "columnId": "RetiringFeature",
+                    "label": "Retiring feature"
+                  },
+                  {
+                    "columnId": "RetirementDate",
+                    "label": "Retirement date"
+                  },
+                  {
+                    "columnId": "DaysLeft",
+                    "label": "Days left"
+                  },
+                  {
+                    "columnId": "AdvisorStatus",
+                    "label": "Advisor status"
+                  },
+                  {
+                    "columnId": "LearnMore",
+                    "label": "Guidance"
+                  },
+                  {
+                    "columnId": "Subscription",
+                    "label": "Subscription"
+                  }
+                ]
+              }
+            },
+            "name": "notices - advisor retirements"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "servicehealthresources\n| where type =~ 'microsoft.resourcehealth/events'\n| extend EventType = tostring(properties.EventType), EventSubType = tostring(properties.EventSubType)\n| where EventType == 'HealthAdvisory' and EventSubType == 'Retirement'\n| extend TrackingId = tostring(properties.TrackingId), Title = tostring(properties.Title), NoticeStatus = tostring(properties.Status)\n| extend RetirementDate = coalesce(todatetime(tolong(properties.ImpactMitigationTime)), todatetime(tostring(properties.ImpactMitigationTime)))\n| extend ImpactText = tostring(properties.Impact), Service = tostring(properties.Impact[0].ImpactedService)\n| where '{NoticeScope}' == 'all' or ImpactText contains 'SQL' or ImpactText contains 'Database' or ImpactText contains 'Cosmos' or ImpactText contains 'Redis' or ImpactText contains 'Cassandra' or Title contains 'SQL' or Title contains 'Database' or Title contains 'Cosmos' or Title contains 'Redis' or Title contains 'Cassandra'\n| where isnull(RetirementDate) or RetirementDate > ago(180d)\n| summarize Subscriptions = dcount(subscriptionId) by TrackingId, Title, Service, NoticeStatus, RetirementDate\n| extend DaysLeft = toint((RetirementDate - now()) / 1d)\n| extend Details = strcat('https://app.azure.com/h/', TrackingId, '/')\n| order by RetirementDate asc",
+              "size": 0,
+              "title": "Retirement notices (Azure Service Health)",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "visualization": "table",
+              "showExportToExcel": true,
+              "noDataMessage": "No retirement notices from the last 180 days or upcoming for these subscriptions.",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "RetirementDate",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": true,
+                      "formatName": "shortDatePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "Details",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "Url",
+                      "linkLabel": "Open notice"
+                    }
+                  }
+                ],
+                "rowLimit": 5000,
+                "filter": true,
+                "labelSettings": [
+                  {
+                    "columnId": "TrackingId",
+                    "label": "Tracking ID"
+                  },
+                  {
+                    "columnId": "Title",
+                    "label": "Notice"
+                  },
+                  {
+                    "columnId": "Service",
+                    "label": "Service"
+                  },
+                  {
+                    "columnId": "NoticeStatus",
+                    "label": "Status"
+                  },
+                  {
+                    "columnId": "RetirementDate",
+                    "label": "Retirement date"
+                  },
+                  {
+                    "columnId": "Subscriptions",
+                    "label": "Subscriptions affected"
+                  },
+                  {
+                    "columnId": "DaysLeft",
+                    "label": "Days left"
+                  },
+                  {
+                    "columnId": "Details",
+                    "label": "Details"
+                  }
+                ]
+              }
+            },
+            "name": "notices - service health retirements"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "**Get these notices by email as well**\n- [Deploy Service Health alerts to every subscription with Azure Policy](https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-deploy-policy). Include the Health advisories event type and send them to the database team's action group.\n- [Set up an Advisor recommendation digest](https://learn.microsoft.com/en-us/azure/advisor/advisor-recommendations-digest) for the Reliability category, monthly.\n- For retirements across all Azure services, open Advisor's [Service Retirement workbook](https://learn.microsoft.com/en-us/azure/advisor/advisor-workbook-service-retirement)."
+            },
+            "name": "notices links"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "notices"
+      },
+      "name": "tab - retirement notices"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## Support dates used by this dashboard\nLast checked **13 Oct 2026** from Microsoft Learn. The update job refreshes these dates. A version that isn't listed has no published end date yet.\n\n### Azure Database for PostgreSQL flexible server\n| Version | Standard support ends | Extended Support starts | Extended Support ends | Notes |\n|---|---|---|---|---|\n| 18 | 14 Nov 2030 |  |  |  |\n| 17 | 8 Nov 2029 |  |  |  |\n| 16 | 9 Nov 2028 |  |  |  |\n| 15 | 11 Nov 2027 |  |  |  |\n| 14 | 11 Dec 2026 | 1 Feb 2027 | 11 Nov 2029 | Microsoft's pages give different end dates (11 Dec 2026 and 31 Jan 2027); the earlier one is used. |\n| 13 | 31 Jul 2026 | 1 Aug 2026 | 12 Nov 2028 |  |\n| 12 | 31 Jul 2026 | 1 Aug 2026 | 13 Nov 2027 |  |\n| 11 | 31 Jul 2026 | 1 Aug 2026 | 31 Mar 2027 |  |\n\nSources: [version policy](https://learn.microsoft.com/en-us/azure/postgresql/configure-maintain/concepts-version-policy) | [extended support](https://learn.microsoft.com/en-us/azure/postgresql/configure-maintain/extended-support)\n\n### Azure Database for MySQL flexible server\n| Version | Standard support ends | Extended Support starts | Extended Support ends | Notes |\n|---|---|---|---|---|\n| 8.0 | 31 Jan 2027 | 1 Feb 2027 | 31 May 2029 |  |\n| 5.7 | 30 Sep 2026 | 1 Oct 2026 | 31 Mar 2029 |  |\n\nSources: [version support policy](https://learn.microsoft.com/en-us/azure/mysql/concepts-version-policy)\n\n### SQL Server (enabled by Azure Arc, or on Azure VMs)\n| Version | Mainstream support ends | Extended support ends (free security updates stop) | ESU start | ESU end | Notes |\n|---|---|---|---|---|---|\n| 2025 | 7 Jan 2031 | 7 Jan 2036 |  |  |  |\n| 2022 | 12 Jan 2028 | 12 Jan 2033 |  |  |  |\n| 2019 | 1 Mar 2025 | 9 Jan 2030 |  |  |  |\n| 2017 | 12 Oct 2022 | 13 Oct 2027 |  |  |  |\n| 2016 | 14 Jul 2021 | 15 Jul 2026 | 15 Jul 2026 | 17 Jul 2029 |  |\n| 2014 | 10 Jul 2019 | 10 Jul 2024 | 10 Jul 2024 | 13 Jul 2027 |  |\n| 2012 | 12 Jul 2017 | 13 Jul 2022 | 13 Jul 2022 | 9 Jul 2025 |  |\n\nDates as published on Microsoft Lifecycle. After extended support ends, security updates need Extended Security Updates (ESU), through Azure Arc, the SQL IaaS Agent extension on Azure VMs, or volume licensing. SQL Server 2014 on Azure VMs gets them free.\n\nSources: [Microsoft Lifecycle](https://learn.microsoft.com/en-us/lifecycle/products/?terms=SQL%20Server) | [Extended Security Updates](https://learn.microsoft.com/en-us/sql/sql-server/end-of-support/sql-server-extended-security-updates)\n\n### Azure Cosmos DB for PostgreSQL\n| Version | Retirement date (Azure) | Notes |\n|---|---|---|\n| 16 | 9 Nov 2028 |  |\n| 15 | 11 Nov 2027 |  |\n| 14 | 12 Nov 2026 |  |\n| 13 | 13 Nov 2025 |  |\n| 12 | 21 Nov 2024 |  |\n| 11 | 9 Nov 2023 |  |\n\nThe service itself is on a retirement path and isn't recommended for new projects. Microsoft recommends Azure Database for PostgreSQL elastic clusters instead.\n\nSources: [supported versions](https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-versions)\n\n### Services being retired\nThese dates apply to every version of the service.\n\n| Service | Retirement date | Notes | Source |\n|---|---|---|---|\n| Azure Database for PostgreSQL single server | 28 Mar 2025 |  | [retirement announcement](https://learn.microsoft.com/en-us/lifecycle/end-of-support/end-of-support-2025) |\n| Azure Database for MySQL single server | 16 Sep 2024 |  | [retirement announcement](https://learn.microsoft.com/en-us/azure/mysql/migrate/whats-happening-to-mysql-single-server) |\n| Azure Database for MariaDB | 19 Sep 2025 |  | [retirement announcement](https://learn.microsoft.com/en-us/lifecycle/announcements/azure-products-retirement-september-2025) |\n| Azure Cache for Redis (Basic, Standard and Premium) | 30 Sep 2028 |  | [retirement announcement](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/retirement-faq) |\n| Azure Cache for Redis (Enterprise and Enterprise Flash) | 31 Mar 2027 |  | [retirement announcement](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/retirement-faq) |\n"
+            },
+            "name": "lifecycle dates table"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "---\n### Other database services\n- **Azure SQL Managed Instance**: there are no version end dates. Each instance follows an update policy. The SQL Server 2022 update policy is available until SQL Server 2022 mainstream support ends (January 2028), and instances then move automatically to the policy for the latest SQL Server release ([update policy](https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/update-policy?view=azuresql)).\n- **Azure Cosmos DB for MongoDB (RU)**: the dashboard shows each account's server version. Azure has no end-of-support plans for these versions and gives at least three years' notice before ending one ([3.6 server version](https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/feature-support-36)), so there's no date to count down to. Versions below the **MongoDB: review versions below** setting are marked *Review* to help plan upgrades for newer features and driver support. The upgrade is done in place from the account's Features page, without downtime; upgrade the application drivers first ([upgrade the server version](https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/upgrade-version)).\n- **Azure DocumentDB (MongoDB vCore)**: clusters show their MongoDB version and use the same review setting. Upgrade from the cluster's Overview page ([upgrade a cluster](https://learn.microsoft.com/en-us/azure/documentdb/how-to-upgrade-cluster)).\n- **Azure Managed Instance for Apache Cassandra**: clusters show their Cassandra version. Versions below the **Cassandra: review versions below** setting (4.0 by default, so 3.11) are marked *Review*: 3.11 reached community end of life at the end of 2023.\n- **Azure Cosmos DB for PostgreSQL**: each cluster's PostgreSQL version is checked against the retirement dates on its supported versions page. The service itself is on a retirement path, so every row suggests planning a move to Azure Database for PostgreSQL elastic clusters.\n- **Azure Cache for Redis**: the Basic, Standard and Premium tiers retire on 30 September 2028, and the Enterprise and Enterprise Flash tiers on 31 March 2027 ([retirement FAQ](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/retirement-faq)). These dates count down like version end dates. Azure Managed Redis is listed with its version and no end date.\n- **Retired services**: any Azure Database for PostgreSQL or MySQL single server and Azure Database for MariaDB still listed is shown as past end of support.\n- **Azure SQL Database** and **Cosmos DB for NoSQL, Cassandra, Table and Gremlin** have no versions to upgrade, so they're listed as *Not version-based* for a complete inventory. Use the Status filter to hide them. The SQL server that Azure Synapse Analytics creates for each workspace is left out, because Synapse manages it.\n\n### SQL Server enabled by Azure Arc, and SQL Server on Azure VMs\n- The dashboard lists the database engine instances that Azure Arc reports (SQL Server 2012 and later), and the Azure VMs registered with the SQL IaaS Agent extension. Reporting Services and other associated services are left out.\n- **ESU (SQL Server)**: for Arc-enabled servers it shows the Extended Security Updates setting of the server's SQL Server extension. SQL Server 2014 on Azure VMs gets ESUs free through Windows Update. ESU subscriptions for other Azure VMs, and ESUs bought through volume licensing, aren't visible to the dashboard, so those servers show *Not reported* or *Not subscribed (Azure Arc)*.\n- **Owner**: taken from the owner tag on the SQL Server resource, or else from the tag on its Arc-enabled server or VM.\n- An instance shown as *Azure Arc (disconnected)* hasn't reported recently, so its details may be out of date.\n- Learn more: [Extended Security Updates for SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/end-of-support/sql-server-extended-security-updates)\n\n## Using this dashboard\n- Review it monthly, and weekly once anything turns Red. Pin the summary tiles to an Azure dashboard to keep them on your home screen.\n- Narrow the view with the **Database types**, **Tag name** and **Tag values**, **Resource groups** and **Status** filters at the top of the **Database versions** tab. They apply to the tiles, the resource group summary and both tables. Each list only shows what matches the filters before it.\n- **Versions in use** has one row per engine version, most urgent first. Select a row to list just those servers in the table below it, and select **Show all versions** to go back to the full list.\n- **Tag filter**: pick a tag name such as *environment*, then the values to show. Tag names and values are matched regardless of case, so they're listed in lower case. For SQL Server, the tag on its Arc-enabled server or VM is used when the SQL Server resource doesn't have the tag. Pick *(not tagged)* to find servers that are missing the tag.\n- To find one server, type part of its name, owner or version in the search box above the table.\n- **Servers by resource group** lists the groups with the most servers past end of support or Red first, which helps to plan the work by team or application.\n- Change the Red and Amber thresholds, the owner tag name, the MongoDB and Cassandra review versions and who gets the reminder emails with the settings at the top of the **Database versions** tab, then save the dashboard.\n- Use **Export to Excel** on the table to share the list or attach it to a change request. The filters don't change the reminder emails, which always cover every server.\n\n## Keeping the dates current\n- A weekly update job (an Azure Automation runbook) reads Microsoft's version support pages, the SQL Server lifecycle pages and the Cosmos DB for PostgreSQL versions page, checks the dates and saves them here. The banner at the top shows when the dates were last checked, and turns orange if they haven't been checked for 45 days.\n- Don't edit the dates in the dashboard by hand, because the next run replaces them. To set a date yourself, add it to *DATE_OVERRIDES* in the runbook's settings.\n- Without the update job, the dashboard keeps the dates it was installed with.\n\n## Reminder emails\n- The same job emails the addresses in **Reminder emails to** a weekly summary of every Red server and every server already past end of support. Each owner whose email address is in a server's owner tag (default tag name: *Owner*) also gets their own list.\n- Services with no deadline (*Review*, *No end date*, *Not version-based*) aren't included in the emails.\n- Nothing is sent in a week when no server needs a reminder, or while **Reminder emails to** is empty. The Red threshold and owner tag name set on the **Database versions** tab are used for the emails too, once the dashboard is saved."
+            },
+            "name": "lifecycle how to use"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "reference"
+      },
+      "name": "tab - lifecycle reference"
+    }
+  ],
+  "fallbackResourceIds": [
+    "Azure Monitor"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
